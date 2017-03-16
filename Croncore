@@ -1,5 +1,5 @@
-# Linux-Repo
-git@github.com:habibmasri/Linux.git
+#Linux-Repo
+#git@github.com:habibmasri/Linux.git
 #!/bin/bash
 mkdir pac2Logs
 echo "#!/bin/bash
