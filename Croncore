@@ -11,14 +11,6 @@ crontab cronpac
 rm cronpac
 
 
-next steps:
-add pwd
-force create a dir
-
-0 0 * * * /data/apps/RMB_1A_FO_BUILD/mx_ox54057_165771/PAC.CORE.sh
-0 0 * * 5 find  /data/apps/RMB_1A_FO_BUILD/mx_ox54057_165771/pacLogs/PAC*.gz -mtime +7 -exec rm {} \;
-
-
 
 #!/bin/bash
 crontab -l > cronpac
@@ -34,3 +26,6 @@ echo "0 0 * * * `pwd`/PAC.CORE2.sh" >> cronpac
 crontab cronpac
 fi
 rm cronpac cronpactest
+
+0 0 * * * /data/apps/RMB_1A_FO_BUILD/mx_ox54057_165771/PAC.CORE.sh
+0 0 * * 5 find  /data/apps/RMB_1A_FO_BUILD/mx_ox54057_165771/pacLogs/PAC*.gz -mtime +7 -exec rm {} \;
