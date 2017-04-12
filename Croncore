@@ -1,16 +1,16 @@
 #Linux-Repo
 #git@github.com:habibmasri/Linux.git
-
 #!/bin/bash
+
 crontab -l > cronpac
 grep PAC cronpac > cronpactest
 if [ -s cronpactest ]; then
 echo "Cron job alredy configured"
 else mkdir pac2Logs
 echo "#!/bin/bash
-/bin/gtar -czvf `pwd`/PAC.cor.\`date +"%y%m%d"\`.tar.gz `pwd`/core*; rm `pwd`/core*; mv `pwd`/PAC*.gz `pwd`/pac2Logs;" > PAC.CORE2.sh
+/bin/gtar -czvf `pwd`/PAC.LOG.\`date +"%y%m%d"\`.tar.gz `pwd`/core* `pwd`/logs/; rm `pwd`/core*; mv `pwd`/PAC.LOG*tar.gz `pwd`/pac2Logs; sleep 1; find `pwd`/logs/ -type f -name '*.log' -exec truncate -s 0 {} \;" > PAC.CORE2.sh
 chmod +x PAC.CORE2.sh
-echo "0 0 * * * `pwd`/PAC.CORE2.sh; sleep 5; find `pwd`/pac2Logs/PAC*.gz -mtime +5 -exec rm {} \;" >> cronpac
+echo "0 0 * * * `pwd`/PAC.CORE2.sh; sleep 5; find `pwd`/pac2Logs/PAC*.gz -mtime +7 -exec rm {} \;" >> cronpac
 crontab cronpac
 fi
 rm cronpac cronpactest
