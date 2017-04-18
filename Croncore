@@ -2,7 +2,9 @@
 #git@github.com:habibmasri/Linux.git
 
 #!/bin/bash
-ls | grep -w pac2Logs > pactest
+ls | grep -w mxg2000_settings.sh > pactest1
+if [ -s pactest1 ]; then
+ls | grep -w pac2Logs > pactest2
 if [ -s pactest ]; then
 echo "Cron job alredy configured for --> `pwd`"
 else mkdir pac2Logs
@@ -12,6 +14,9 @@ echo "#!/bin/bash
 chmod +x PAC.CORE2.sh
 echo "0 0 * * * `pwd`/PAC.CORE2.sh; sleep 5; find `pwd`/pac2Logs/PAC*.gz -mtime +5 -exec rm {} \;" >> cronpac
 crontab cronpac
+rm pactest2 cronpac 2>/dev/null
 fi
-rm pactest cronpac 2>/dev/null
+else echo "WARNING: Please execute the script in the appDir"
+fi
+rm pactest1 2>/dev/null
 
