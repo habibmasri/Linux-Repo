@@ -1,0 +1,42 @@
+#!/bin/bash
+
+`cat task*.log >  task_BIG.log 2> /dev/null`
+
+`grep Affinity task_BIG.log | cut -d "|" -f4 > ListOfAffinity`
+
+`grep "Execute full reval task" *.time | awk '{print $10}' | cut -d "s" -f1 > ExecutionTime`
+
+`paste ExecutionTime ListOfAffinity > TimeAffinity`
+
+
+for i in `grep "Inserting" service.log | cut -d "|" -f4 | cut -d "," -f1 | grep -v "SimView"`; do echo -n $i"  "; grep $i TimeAffinity | awk '{sum += $1} END {print sum}'; done | awk '{print $2"  |" $1}' > AffinitySpaceTime
+
+for i in `cat ListOfAffinity | sort -u`; do grep $i service.log|grep nbUpdates|tail -1|awk -F "nbUpdates:" '{print $2}'|awk -F "," '{printf $1}' ;echo " |"$i;done > AffinitySpaceCount
+
+`grep "Inserting" service.log | grep FullReval | cut -d":" -f5,6 | cut -d"|" -f1,4 | cut -d"," -f1 | sed -e 's/typo_//' | sed -e 's/ and affinity://' | sed -e 's/run_Batch//' | sed -e 's/|//' |awk '{for (i=1;i<NF;i++) printf $i" ";print "|"$NF}'> TypoSpaceAffinity`
+
+
+`awk -F "|" 'NR==FNR {a[$2]=$1; next} $2 in a {print a[$2],"|"$1}' TypoSpaceAffinity AffinitySpaceTime > TypoSpaceTime`
+
+`awk -F "|" 'NR==FNR {a[$2]=$1; next} $2 in a {print a[$2],"|"$1}' TypoSpaceAffinity AffinitySpaceCount > TypoSpaceCount`
+
+`awk -F "|" '{seen[$1]+=$2} END{for (i in seen) print i"|", seen[i]}' TypoSpaceTime > TypoMiniSpaceTime`
+
+`awk -F "|" '{seen[$1]+=$2} END{for (i in seen) print i"|", seen[i]}' TypoSpaceCount > TypoMiniSpaceCount`
+
+V1="`awk -F "|" 'NR==FNR {a[$1]=$2; next} $1 in a {print $1"|",a[$1]"|",$2}' TypoMiniSpaceTime TypoMiniSpaceCount`"
+
+echo "$V1"
+
+
+`rm task_BIG.log`
+#`rm ListOfAffinity`
+#`rm ExecutionTime`
+#`rm TimeAffinity`
+#`rm AffinitySpaceTime`
+#`rm TypoSpaceAffinity`
+#`rm TypoSpaceTime`
+#`rm AffinitySpaceCount`
+#`rm TypoSpaceCount`
+#`rm TypoMiniSpaceTime`
+#`rm TypoMiniSpaceCount`
