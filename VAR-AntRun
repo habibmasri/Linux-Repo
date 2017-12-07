@@ -1,0 +1,23 @@
+#!/bin/bash
+rm $1/*.log
+rm $1/*.time
+mkdir "$1"
+echo "Directory Created"
+./stopMarketRiskService.sh
+echo "Market Risk Service Stopped"
+./emptyMRBlogs.sh
+echo "Emptied MRB logs"
+./startMarketRiskService.sh
+echo "Started Market Risk Service"
+sleep 2
+./launchmxj.app -scriptant /MXJ_ANT_BUILD_FILE:public.mxres.mxmarketrisk_service.scripts.ant-target-RMB.mxres /MXJ_ANT_TARGET:$1
+echo "Launching MRB Run"
+./copyMRBlogs.sh $1
+echo "Copied Logs"
+cp ./StringTheoryNames.sh_Compute ./$1/StringTheoryNames.sh_Compute
+echo "Copied Parsing Script"
+chmod +x ./$1/StringTheoryNames.sh_Compute
+echo "Parsing Script Granted Execution Rights"
+cd ./$1
+./StringTheoryNames.sh_Compute > $1"_Timing.log"
+echo "Done Parsing"
